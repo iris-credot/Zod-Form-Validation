@@ -12,13 +12,14 @@ import * as z from "zod";
   gender: z.enum(["male", "female", "other"], {
     errorMap: () => ({ message: "Please select a gender" }),
   }),
-  message: z.string().max(200, "Message must be under 200 characters")
+  messages: z.string().max(200, "Message must be under 200 characters").min(20,"Message must be under 20 characters")
  })
 export default function FormsExtraction() {
     const {
         register,
         handleSubmit,
         formState: { errors },
+        reset,
       } = useForm({
         resolver: zodResolver(model),
       });
@@ -26,12 +27,13 @@ export default function FormsExtraction() {
       const onSubmit = (data) => {
         console.log("Login data:", data);
         alert("Form Submitted")
+        reset(); 
       };
   return (
     <div className="w-full h-[700px] max-w-3xl bg-white flex flex-col justify-center items-center p-5 rounded-lg gap-6 shadow-lg">
       <h1 className="text-black text-3xl font-bold">Forms Extraction</h1>
 
-      <form action={handleSubmit(onSubmit)} className="bg-slate-100 w-full  overflow-auto p-6 flex flex-col rounded-md justify-start items-start text-base gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-100 w-full  overflow-auto p-6 flex flex-col rounded-md justify-start items-start text-base gap-4">
         <div className="w-full flex flex-col">
           <label htmlFor="names" className="text-gray-700 font-medium">Names</label>
           <input
@@ -101,14 +103,14 @@ export default function FormsExtraction() {
           </div> 
           
           <div className="w-full">
-            <label htmlFor="message" className="block text-gray-700 font-semibold mb-1">Message</label>
+            <label htmlFor="messages" className="block text-gray-700 font-semibold mb-1">Message</label>
             <textarea
-              {...register("message")}
+              {...register("messages")}
               rows={4}
-              placeholder="Write your message (max 200 characters)"
+              placeholder="Write your message (max 20 characters)"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
-            {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>}
+            {errors.messages && <p className="text-red-500 text-sm mt-1">{errors.messages.message}</p>}
           </div>
 
         <button
